@@ -58,21 +58,30 @@ body {
 
     overflow: hidden;
 
-    --bg: radial-gradient(circle at 50% 50%, #090909 0%, #030303 48%, #000 100%);
+    --bg: radial-gradient(circle at 50% 50%, #0d0d0f 0%, #050506 48%, #000 100%);
     --text-color: #f5f5f5;
+    --accent: #ffffff;
+    --accent-text: #111111;
+    --panel-tint: rgba(22,22,22,.82);
 
     background: var(--bg);
     transition: background 1s ease;
 }
 
 #app[data-theme="kerst"] {
-    --bg: radial-gradient(circle at 50% 40%, #17241a 0%, #0d1710 45%, #060907 75%, #030302 100%);
-    --text-color: #f5efe0;
+    --bg: radial-gradient(circle at 50% 32%, #1c3524 0%, #102316 42%, #08130c 72%, #030603 100%);
+    --text-color: #f7efd9;
+    --accent: #e8b84a;
+    --accent-text: #1c2b1a;
+    --panel-tint: rgba(14,28,17,.82);
 }
 
 #app[data-theme="zomer"] {
-    --bg: radial-gradient(circle at 50% 28%, #fff1c9 0%, #ffd27d 45%, #ff9a5a 80%, #ff7f4d 100%);
+    --bg: radial-gradient(circle at 50% 24%, #fff3cf 0%, #ffd27d 42%, #ff9a5a 78%, #ff704d 100%);
     --text-color: #3a2200;
+    --accent: #ff5d47;
+    --accent-text: #ffffff;
+    --panel-tint: rgba(58,34,10,.55);
 }
 
 #title,
@@ -238,11 +247,11 @@ body {
 
     transform:
         translate3d(0,0,0)
-        rotate(0deg)
-        scaleX(1)
-        scaleY(1);
+        scale(1);
 
-    transition: opacity .25s ease;
+    transition:
+        opacity .25s ease,
+        transform .35s cubic-bezier(.19,1.4,.4,1);
 
     will-change:
         left,
@@ -283,36 +292,28 @@ body {
 
 
 /* =========================================
-   VISIBLE (bouncy jelly entrance)
+   VISIBLE (bouncy entrance, held once settled)
 ========================================= */
 
 .finger.visible {
 
     opacity: 1;
-    animation: fingerIn .55s cubic-bezier(.19,1.6,.4,1) both;
+    animation: fingerIn .5s cubic-bezier(.19,1.5,.4,1) both;
 
 }
 
 @keyframes fingerIn {
 
     0% {
-        transform: scale(.25,.25);
+        transform: scale(.3);
     }
 
-    45% {
-        transform: scale(1.35,.68);
-    }
-
-    65% {
-        transform: scale(.82,1.26);
-    }
-
-    82% {
-        transform: scale(1.12,.9);
+    55% {
+        transform: scale(1.12);
     }
 
     100% {
-        transform: scale(1,1);
+        transform: scale(1);
     }
 
 }
@@ -568,8 +569,12 @@ body {
 
     z-index: 40;
 
-    transition: opacity .3s ease;
+    transition: opacity .3s ease, background .5s ease;
     -webkit-tap-highlight-color: transparent;
+}
+
+#app[data-theme="zomer"] #menuToggle {
+    background: rgba(58,34,10,.28);
 }
 
 #menuToggle svg {
@@ -603,7 +608,7 @@ body {
 
     transform: translateX(-50%) translateY(-14px);
 
-    background: rgba(22,22,22,.82);
+    background: var(--panel-tint);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
 
@@ -619,7 +624,8 @@ body {
 
     transition:
         opacity .35s cubic-bezier(.16,1,.3,1),
-        transform .35s cubic-bezier(.16,1,.3,1);
+        transform .35s cubic-bezier(.16,1,.3,1),
+        background .5s ease;
 }
 
 #menuPanel.open {
@@ -641,7 +647,8 @@ body {
     font-weight: 700;
     letter-spacing: .04em;
     text-transform: uppercase;
-    color: rgba(255,255,255,.5);
+    color: var(--text-color);
+    opacity: .55;
     margin-bottom: 10px;
 }
 
@@ -660,7 +667,7 @@ body {
     border-radius: 9px;
     border: none;
     background: rgba(255,255,255,.1);
-    color: #fff;
+    color: var(--text-color);
     font-size: 19px;
     font-weight: 700;
     -webkit-tap-highlight-color: transparent;
@@ -673,7 +680,7 @@ body {
 #winnerCountDisplay {
     font-size: 18px;
     font-weight: 800;
-    color: #fff;
+    color: var(--text-color);
     min-width: 24px;
     text-align: center;
 }
@@ -689,16 +696,19 @@ body {
     border-radius: 11px;
     border: 1px solid rgba(255,255,255,.12);
     background: rgba(255,255,255,.05);
-    color: rgba(255,255,255,.75);
+    color: var(--text-color);
+    opacity: .75;
     font-size: 13px;
     font-weight: 700;
     -webkit-tap-highlight-color: transparent;
+    transition: background .25s ease, color .25s ease, opacity .25s ease, border-color .25s ease;
 }
 
 .theme-btn.active {
-    background: #fff;
-    color: #111;
-    border-color: #fff;
+    background: var(--accent);
+    color: var(--accent-text);
+    border-color: var(--accent);
+    opacity: 1;
 }
 
 
@@ -830,25 +840,25 @@ const THEMES = {
     ],
 
     kerst: [
-        { hex: "#d1263b", name: "KERSTROOD" },
-        { hex: "#1f7a4d", name: "DENNENGROEN" },
-        { hex: "#e8b84b", name: "GOUD" },
-        { hex: "#f2f2f2", name: "SNEEUWWIT" },
-        { hex: "#c7ccd1", name: "ZILVER" },
-        { hex: "#a3283f", name: "BESSENROOD" },
-        { hex: "#e0973a", name: "AMBER" },
-        { hex: "#7fb8d9", name: "IJSBLAUW" }
+        { hex: "#e63946", name: "KERSTROOD" },
+        { hex: "#2a9d55", name: "DENNENGROEN" },
+        { hex: "#f4b942", name: "GOUD" },
+        { hex: "#fefefe", name: "SNEEUWWIT" },
+        { hex: "#c9d6df", name: "ZILVER" },
+        { hex: "#8b1e3f", name: "BESSENROOD" },
+        { hex: "#d68c45", name: "AMBER" },
+        { hex: "#6fb8d9", name: "IJSBLAUW" }
     ],
 
     zomer: [
-        { hex: "#ffd23f", name: "ZONGEEL" },
-        { hex: "#ff6f59", name: "KORAAL" },
-        { hex: "#2ec4b6", name: "TURKOOIS" },
-        { hex: "#a7d129", name: "LIMOEN" },
-        { hex: "#ff5d8f", name: "WATERMELOEN" },
-        { hex: "#4cc9f0", name: "HEMELSBLAUW" },
-        { hex: "#ffb703", name: "MANGO" },
-        { hex: "#ff8fa3", name: "FLAMINGO" }
+        { hex: "#ffcc33", name: "ZONGEEL" },
+        { hex: "#ff6b5b", name: "KORAAL" },
+        { hex: "#1fc6bb", name: "TURKOOIS" },
+        { hex: "#9bd63a", name: "LIMOEN" },
+        { hex: "#ff4f81", name: "WATERMELOEN" },
+        { hex: "#3ec1f0", name: "HEMELSBLAUW" },
+        { hex: "#ffb100", name: "MANGO" },
+        { hex: "#ff86a8", name: "FLAMINGO" }
     ]
 
 };
@@ -1086,103 +1096,6 @@ function positionFinger(finger) {
 
 
 /* =========================================================
-   JELLY PHYSICS (more intense + springy return)
-========================================================= */
-
-function updateJelly(finger) {
-
-    const dx =
-        finger.x -
-        finger.lastX;
-
-    const dy =
-        finger.y -
-        finger.lastY;
-
-    const speed =
-        Math.sqrt(
-            dx * dx +
-            dy * dy
-        );
-
-    const angle =
-        Math.atan2(dy, dx);
-
-    /*
-       Much more aggressive stretch:
-       smaller divisor + higher cap.
-    */
-
-    const stretch =
-        Math.min(
-            speed / 42,
-            0.62
-        );
-
-    const cos =
-        Math.abs(Math.cos(angle));
-
-    const sin =
-        Math.abs(Math.sin(angle));
-
-    let scaleX =
-        1 + stretch * cos;
-
-    let scaleY =
-        1 + stretch * sin;
-
-    scaleX +=
-        stretch * .3;
-
-    scaleY +=
-        stretch * .3;
-
-    const rotation =
-        Math.max(
-            -18,
-            Math.min(
-                18,
-                dx * .45
-            )
-        );
-
-    finger.el.style.transition = "none";
-
-    finger.el.style.transform =
-
-        `translate3d(0,0,0)
-         rotate(${rotation}deg)
-         scaleX(${scaleX})
-         scaleY(${scaleY})`;
-
-    /*
-       Springy jelly return with overshoot,
-       instead of a flat settle.
-    */
-
-    requestAnimationFrame(() => {
-
-        if (!fingers.has(finger.id))
-            return;
-
-        finger.el.style.transition =
-            "transform .5s cubic-bezier(.19,1.7,.3,1)";
-
-        finger.el.style.transform =
-            "translate3d(0,0,0) rotate(0deg) scaleX(1) scaleY(1)";
-
-    });
-
-    finger.lastX =
-        finger.x;
-
-    finger.lastY =
-        finger.y;
-
-}
-
-
-/* =========================================================
    ADD FINGER
 ========================================================= */
 
@@ -1207,12 +1120,6 @@ function addFinger(touch) {
             touch.clientX,
 
         y:
-            touch.clientY,
-
-        lastX:
-            touch.clientX,
-
-        lastY:
             touch.clientY,
 
         el:
@@ -1277,10 +1184,6 @@ function moveFinger(touch) {
         touch.clientY;
 
     positionFinger(
-        finger
-    );
-
-    updateJelly(
         finger
     );
 
@@ -1632,11 +1535,11 @@ function choose() {
 
                 [
 
-                    { transform: "scale(1,1)" },
-                    { transform: "scale(1.28,.76)" },
-                    { transform: "scale(.86,1.18)" },
-                    { transform: "scale(1.1,.92)" },
-                    { transform: "scale(1,1)" }
+                    { transform: "scale(1)" },
+                    { transform: "scale(1.22)" },
+                    { transform: "scale(.94)" },
+                    { transform: "scale(1.06)" },
+                    { transform: "scale(1)" }
 
                 ],
 
