@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1,
+      maximum-scale=1,
+      user-scalable=no,
+      viewport-fit=cover">
+
+<meta name="theme-color" content="#000">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Wie Is De Lul">
+
+<title>Wie Is De Lul</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    background: #000;
+    color: #fff;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "Inter",
+        Arial,
+        sans-serif;
+
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* =========================================
+   APP
+========================================= */
+
+#app {
+    position: fixed;
+    inset: 0;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            #090909 0%,
+            #030303 48%,
+            #000 100%
+        );
+}
+
+
+/* =========================================
+   STAGE
+========================================= */
+
+#stage {
+    position: absolute;
+    inset: 0;
+}
+
+
+/* =========================================
+   TITLE
+========================================= */
+
+#title {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%)
+        scale(1);
+
+    text-align: center;
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    font-size:
+        clamp(43px, 13vw, 105px);
+
+    font-weight: 850;
+
+    letter-spacing: -.085em;
+
+    line-height: .88;
+
+    white-space: nowrap;
+
+    color: #f5f5f5;
+
+    transition:
+        opacity .7s cubic-bezier(.16,1,.3,1),
+        transform .8s cubic-bezier(.16,1,.3,1),
+        filter .7s ease;
+}
+
+#title.hidden {
+    opacity: 0;
+
+    transform:
+        translateY(-50%)
+        scale(.82);
+
+    filter: blur(15px);
+}
+
+
+/* =========================================
+   COUNTDOWN
+========================================= */
+
+#countdown {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.8);
+
+    z-index: 10;
+
+    pointer-events: none;
+
+    font-size:
+        clamp(65px, 20vw, 150px);
+
+    font-weight: 750;
+
+    letter-spacing: -.09em;
+
+    color: rgba(255,255,255,.9);
+
+    opacity: 0;
+
+    filter: blur(12px);
+
+    font-variant-numeric:
+        tabular-nums;
+
+}
+
+
+#countdown.show {
+
+    animation:
+        countdownIn
+        .45s
+        cubic-bezier(.16,1,.3,1)
+        forwards;
+
+}
+
+
+@keyframes countdownIn {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            scale(.7);
+
+        filter: blur(12px);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+
+        filter: blur(0);
+    }
+
+}
+
+
+/* =========================================
+   FINGER
+========================================= */
+
+.finger {
+
+    position: absolute;
+
+    width: 94px;
+    height: 94px;
+
+    margin-left: -47px;
+    margin-top: -47px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    /*
+        CSS transform is controlled by JS.
+
+        scaleX / scaleY give the
+        jelly deformation.
+    */
+
+    transform:
+        translate3d(0,0,0)
+        rotate(0deg)
+        scaleX(1)
+        scaleY(1);
+
+    transition:
+        opacity .3s ease;
+
+    will-change:
+        left,
+        top,
+        transform,
+        filter;
+
+}
+
+
+/* =========================================
+   SOLID COLOURS
+========================================= */
+
+.color-0 {
+    background: #ff453a;
+}
+
+.color-1 {
+    background: #ff9f0a;
+}
+
+.color-2 {
+    background: #ffd60a;
+}
+
+.color-3 {
+    background: #30d158;
+}
+
+.color-4 {
+    background: #64d2ff;
+}
+
+.color-5 {
+    background: #0a84ff;
+}
+
+.color-6 {
+    background: #bf5af2;
+}
+
+.color-7 {
+    background: #ff375f;
+}
+
+
+/* =========================================
+   SOFT SHADOW
+========================================= */
+
+.finger::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 13%;
+    right: 13%;
+
+    bottom: -9px;
+
+    height: 15px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0,0,0,.55);
+
+    filter:
+        blur(11px);
+
+    z-index: -1;
+}
+
+
+/* =========================================
+   VISIBLE
+========================================= */
+
+.finger.visible {
+
+    opacity: 1;
+
+}
+
+
+/* =========================================
+   ROLLING GLOW
+========================================= */
+
+.finger.rolling {
+
+    filter:
+        drop-shadow(
+            0 0 12px
+            rgba(255,255,255,.08)
+        );
+
+}
+
+
+/*
+   Currently selected ball.
+
+   No ring.
+   Just a beautiful soft glow.
+*/
+
+.finger.roll-active {
+
+    filter:
+
+        drop-shadow(
+            0 0 13px
+            rgba(255,255,255,.35)
+        )
+
+        drop-shadow(
+            0 0 32px
+            rgba(255,255,255,.20)
+        )
+
+        drop-shadow(
+            0 0 65px
+            rgba(255,255,255,.10)
+        );
+
+}
+
+
+/* =========================================
+   WINNER
+========================================= */
+
+.finger.winner {
+
+    z-index: 20;
+
+    filter:
+
+        drop-shadow(
+            0 0 18px
+            rgba(255,255,255,.55)
+        )
+
+        drop-shadow(
+            0 0 55px
+            rgba(255,255,255,.3)
+        );
+
+}
+
+
+/* =========================================
+   LOSER
+========================================= */
+
+.finger.loser {
+
+    opacity: 0 !important;
+
+    transition:
+        opacity .7s ease,
+        filter .7s ease;
+
+}
+
+
+/* =========================================
+   WINNER TEXT
+========================================= */
+
+#winnerText {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%)
+        scale(.7);
+
+    z-index: 30;
+
+    pointer-events: none;
+
+    text-align: center;
+
+    font-size:
+        clamp(42px, 13vw, 105px);
+
+    font-weight: 850;
+
+    letter-spacing: -.075em;
+
+    opacity: 0;
+
+    filter: blur(14px);
+
+}
+
+
+#winnerText.show {
+
+    animation:
+        winnerText
+        1.4s
+        cubic-bezier(.16,1,.3,1)
+        forwards;
+
+}
+
+
+@keyframes winnerText {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(-50%)
+            scale(.7);
+
+        filter: blur(14px);
+
+    }
+
+    35% {
+
+        opacity: 1;
+
+        transform:
+            translateY(-50%)
+            scale(1.08);
+
+        filter: blur(0);
+
+    }
+
+    65% {
+
+        transform:
+            translateY(-50%)
+            scale(.98);
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translateY(-50%)
+            scale(1);
+
+    }
+
+}
+
+
+/* =========================================
+   FLASH
+========================================= */
+
+#flash {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: white;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 50;
+
+}
+
+
+#flash.active {
+
+    animation:
+        flash .7s ease-out;
+
+}
+
+
+@keyframes flash {
+
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: .13;
+    }
+
+    100% {
+        opacity: 0;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:500px) {
+
+    .finger {
+
+        width: 86px;
+        height: 86px;
+
+        margin-left: -43px;
+        margin-top: -43px;
+
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div id="app">
+
+    <div id="stage"></div>
+
+    <div id="title">
+        WIE IS DE LUL
+    </div>
+
+    <div id="countdown"></div>
+
+    <div id="winnerText"></div>
+
+    <div id="flash"></div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const stage =
+    document.getElementById("stage");
+
+const title =
+    document.getElementById("title");
+
+const countdown =
+    document.getElementById("countdown");
+
+const winnerText =
+    document.getElementById("winnerText");
+
+const flash =
+    document.getElementById("flash");
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const fingers =
+    new Map();
+
+let countdownTimer = null;
+
+let choosing = false;
+
+let countdownStart = 0;
+
+let nextPlayerColor = 0;
+
+
+/* =========================================================
+   CREATE FINGER
+========================================================= */
+
+function createFinger(colorIndex) {
+
+    const el =
+        document.createElement("div");
+
+    el.className =
+        "finger color-" +
+        (colorIndex % 8);
+
+    stage.appendChild(el);
+
+    requestAnimationFrame(() => {
+
+        el.classList.add(
+            "visible"
+        );
+
+    });
+
+    return el;
+
+}
+
+
+/* =========================================================
+   POSITION
+========================================================= */
+
+function positionFinger(finger) {
+
+    finger.el.style.left =
+        finger.x + "px";
+
+    finger.el.style.top =
+        finger.y + "px";
+
+}
+
+
+/* =========================================================
+   JELLY PHYSICS
+========================================================= */
+
+function updateJelly(finger) {
+
+    /*
+       Calculate movement speed.
+    */
+
+    const dx =
+        finger.x -
+        finger.lastX;
+
+    const dy =
+        finger.y -
+        finger.lastY;
+
+
+    /*
+       Convert movement into velocity.
+    */
+
+    const speed =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    /*
+       Angle of movement.
+    */
+
+    const angle =
+        Math.atan2(dy, dx);
+
+
+    /*
+       Maximum stretch.
+
+       Faster movement =
+       more stretch.
+    */
+
+    const stretch =
+        Math.min(
+            speed / 70,
+            0.28
+        );
+
+
+    /*
+       Stretch in movement direction.
+
+       X gets longer when moving horizontally.
+       Y gets longer when moving vertically.
+
+       Rotation makes it feel like jelly.
+    */
+
+    const cos =
+        Math.abs(Math.cos(angle));
+
+    const sin =
+        Math.abs(Math.sin(angle));
+
+
+    let scaleX =
+        1 + stretch * cos;
+
+    let scaleY =
+        1 + stretch * sin;
+
+
+    /*
+       Preserve roughly the same volume.
+
+       If one side stretches,
+       the other compresses.
+    */
+
+    scaleX +=
+        stretch * .25;
+
+    scaleY +=
+        stretch * .25;
+
+
+    /*
+       Subtle rotation.
+    */
+
+    const rotation =
+        Math.max(
+            -12,
+            Math.min(
+                12,
+                dx * .35
+            )
+        );
+
+
+    finger.el.style.transform =
+
+        `translate3d(0,0,0)
+         rotate(${rotation}deg)
+         scaleX(${scaleX})
+         scaleY(${scaleY})`;
+
+
+    /*
+       Slowly return to normal shape.
+    */
+
+    requestAnimationFrame(() => {
+
+        if (!fingers.has(finger.id))
+            return;
+
+        finger.el.style.transition =
+            "transform .32s cubic-bezier(.16,1,.3,1)";
+
+        finger.el.style.transform =
+            "translate3d(0,0,0) rotate(0deg) scaleX(1) scaleY(1)";
+
+    });
+
+
+    /*
+       Next movement starts from here.
+    */
+
+    finger.lastX =
+        finger.x;
+
+    finger.lastY =
+        finger.y;
+
+}
+
+
+/* =========================================================
+   ADD FINGER
+========================================================= */
+
+function addFinger(touch) {
+
+    if (choosing)
+        return;
+
+
+    const finger = {
+
+        id:
+            touch.identifier,
+
+        x:
+            touch.clientX,
+
+        y:
+            touch.clientY,
+
+        lastX:
+            touch.clientX,
+
+        lastY:
+            touch.clientY,
+
+        el:
+            createFinger(
+                nextPlayerColor++
+            )
+
+    };
+
+
+    positionFinger(
+        finger
+    );
+
+
+    fingers.set(
+        finger.id,
+        finger
+    );
+
+
+    /*
+       Hide title.
+    */
+
+    title.classList.add(
+        "hidden"
+    );
+
+
+    /*
+       Start countdown at
+       exactly two fingers.
+    */
+
+    if (
+        fingers.size >= 2 &&
+        !countdownTimer
+    ) {
+
+        startCountdown();
+
+    }
+
+}
+
+
+/* =========================================================
+   MOVE FINGER
+========================================================= */
+
+function moveFinger(touch) {
+
+    const finger =
+        fingers.get(
+            touch.identifier
+        );
+
+
+    if (
+        !finger ||
+        choosing
+    )
+        return;
+
+
+    finger.x =
+        touch.clientX;
+
+    finger.y =
+        touch.clientY;
+
+
+    positionFinger(
+        finger
+    );
+
+
+    /*
+       Jelly stretch.
+    */
+
+    updateJelly(
+        finger
+    );
+
+}
+
+
+/* =========================================================
+   REMOVE FINGER
+========================================================= */
+
+function removeFinger(id) {
+
+    if (choosing)
+        return;
+
+
+    const finger =
+        fingers.get(id);
+
+
+    if (!finger)
+        return;
+
+
+    finger.el.classList.remove(
+        "visible"
+    );
+
+
+    setTimeout(() => {
+
+        finger.el.remove();
+
+    }, 350);
+
+
+    fingers.delete(id);
+
+
+    /*
+       Someone left.
+
+       Cancel countdown.
+    */
+
+    if (fingers.size < 2) {
+
+        cancelCountdown();
+
+    }
+
+
+    if (fingers.size === 0) {
+
+        title.classList.remove(
+            "hidden"
+        );
+
+        nextPlayerColor = 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   START COUNTDOWN
+========================================================= */
+
+function startCountdown() {
+
+    if (
+        fingers.size < 2 ||
+        choosing
+    )
+        return;
+
+
+    countdownStart =
+        performance.now();
+
+
+    countdown.textContent =
+        "3.0";
+
+
+    countdown.classList.remove(
+        "show"
+    );
+
+
+    void countdown.offsetWidth;
+
+
+    countdown.classList.add(
+        "show"
+    );
+
+
+    countdownTimer =
+        requestAnimationFrame(
+            countdownLoop
+        );
+
+}
+
+
+/* =========================================================
+   COUNTDOWN LOOP
+========================================================= */
+
+function countdownLoop(now) {
+
+    if (
+        fingers.size < 2 ||
+        choosing
+    ) {
+
+        countdownTimer = null;
+
+        return;
+
+    }
+
+
+    const elapsed =
+        now -
+        countdownStart;
+
+
+    const remaining =
+        Math.max(
+            0,
+            3000 - elapsed
+        );
+
+
+    /*
+       One decimal place.
+
+       3.0
+       2.9
+       2.8
+       ...
+       0.1
+       0.0
+    */
+
+    countdown.textContent =
+        (remaining / 1000)
+            .toFixed(1);
+
+
+    if (
+        remaining <= 0
+    ) {
+
+        countdownTimer = null;
+
+        countdown.classList.remove(
+            "show"
+        );
+
+        choose();
+
+        return;
+
+    }
+
+
+    countdownTimer =
+        requestAnimationFrame(
+            countdownLoop
+        );
+
+}
+
+
+/* =========================================================
+   CANCEL COUNTDOWN
+========================================================= */
+
+function cancelCountdown() {
+
+    if (
+        countdownTimer !== null
+    ) {
+
+        cancelAnimationFrame(
+            countdownTimer
+        );
+
+        countdownTimer = null;
+
+    }
+
+
+    countdown.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   CHOOSE
+========================================================= */
+
+function choose() {
+
+    if (
+        choosing ||
+        fingers.size < 2
+    )
+        return;
+
+
+    choosing = true;
+
+
+    cancelCountdown();
+
+
+    const list =
+        [...fingers.values()];
+
+
+    /*
+       Prepare balls.
+    */
+
+    list.forEach(finger => {
+
+        finger.el.classList.add(
+            "rolling"
+        );
+
+    });
+
+
+    /*
+       Roulette state.
+    */
+
+    let current = 0;
+
+    let delay = 75;
+
+    let elapsed = 0;
+
+
+    /*
+       Long roll.
+
+       Around 5 seconds.
+    */
+
+    const rollDuration =
+        4800;
+
+
+    function roll() {
+
+        if (
+            elapsed >=
+            rollDuration
+        ) {
+
+            finish();
+
+            return;
+
+        }
+
+
+        /*
+           Remove glow.
+        */
+
+        list.forEach(finger => {
+
+            finger.el.classList.remove(
+                "roll-active"
+            );
+
+        });
+
+
+        /*
+           Current ball.
+        */
+
+        const active =
+            list[
+                current %
+                list.length
+            ];
+
+
+        /*
+           Smooth glow only.
+        */
+
+        active.el.classList.add(
+            "roll-active"
+        );
+
+
+        /*
+           Advance.
+        */
+
+        current++;
+
+
+        /*
+           Gradually slow down.
+
+           Starts fast,
+           ends very slow.
+        */
+
+        delay *=
+            1.055;
+
+
+        /*
+           Tiny organic variation.
+        */
+
+        delay +=
+            Math.random() * 7;
+
+
+        elapsed +=
+            delay;
+
+
+        setTimeout(
+            roll,
+            delay
+        );
+
+    }
+
+
+    roll();
+
+
+    /* =====================================================
+       FINISH
+    ===================================================== */
+
+    function finish() {
+
+        /*
+           REAL winner is selected
+           only now.
+        */
+
+        const winner =
+            list[
+                Math.floor(
+                    Math.random() *
+                    list.length
+                )
+            ];
+
+
+        /*
+           Remove rolling effects.
+        */
+
+        list.forEach(finger => {
+
+            finger.el.classList.remove(
+                "rolling",
+                "roll-active"
+            );
+
+        });
+
+
+        /*
+           Fade losers.
+        */
+
+        list.forEach(finger => {
+
+            if (
+                finger !== winner
+            ) {
+
+                finger.el.classList.add(
+                    "loser"
+                );
+
+            }
+
+        });
+
+
+        /*
+           Winner glow.
+        */
+
+        winner.el.classList.add(
+            "winner"
+        );
+
+
+        /*
+           Winner jelly bounce.
+        */
+
+        winner.el.animate(
+
+            [
+
+                {
+                    transform:
+                        "scale(1,1)"
+                },
+
+                {
+                    transform:
+                        "scale(1.22,.82)"
+                },
+
+                {
+                    transform:
+                        "scale(.9,1.12)"
+                },
+
+                {
+                    transform:
+                        "scale(1.08,.94)"
+                },
+
+                {
+                    transform:
+                        "scale(1,1)"
+                }
+
+            ],
+
+            {
+
+                duration:
+                    900,
+
+                easing:
+                    "cubic-bezier(.16,1,.3,1)",
+
+                fill:
+                    "forwards"
+
+            }
+
+        );
+
+
+        /*
+           Winner flash.
+        */
+
+        setTimeout(() => {
+
+            flash.classList.remove(
+                "active"
+            );
+
+            void flash.offsetWidth;
+
+            flash.classList.add(
+                "active"
+            );
+
+
+            /*
+               Display winner.
+            */
+
+            winnerText.textContent =
+                "SPELER " +
+                (list.indexOf(winner) + 1);
+
+
+            winnerText.classList.remove(
+                "show"
+            );
+
+            void winnerText.offsetWidth;
+
+            winnerText.classList.add(
+                "show"
+            );
+
+        }, 350);
+
+
+        /*
+           Clean reset.
+        */
+
+        setTimeout(() => {
+
+            list.forEach(finger => {
+
+                finger.el.remove();
+
+            });
+
+
+            fingers.clear();
+
+
+            winnerText.classList.remove(
+                "show"
+            );
+
+
+            choosing = false;
+
+
+            nextPlayerColor = 0;
+
+
+            title.classList.remove(
+                "hidden"
+            );
+
+        }, 2100);
+
+    }
+
+}
+
+
+/* =========================================================
+   TOUCH START
+========================================================= */
+
+stage.addEventListener(
+
+    "touchstart",
+
+    event => {
+
+        event.preventDefault();
+
+
+        for (
+            const touch
+            of event.changedTouches
+        ) {
+
+            addFinger(touch);
+
+        }
+
+    },
+
+    {
+        passive: false
+    }
+
+);
+
+
+/* =========================================================
+   TOUCH MOVE
+========================================================= */
+
+stage.addEventListener(
+
+    "touchmove",
+
+    event => {
+
+        event.preventDefault();
+
+
+        for (
+            const touch
+            of event.changedTouches
+        ) {
+
+            moveFinger(touch);
+
+        }
+
+    },
+
+    {
+        passive: false
+    }
+
+);
+
+
+/* =========================================================
+   TOUCH END
+========================================================= */
+
+stage.addEventListener(
+
+    "touchend",
+
+    event => {
+
+        event.preventDefault();
+
+
+        for (
+            const touch
+            of event.changedTouches
+        ) {
+
+            removeFinger(
+                touch.identifier
+            );
+
+        }
+
+    },
+
+    {
+        passive: false
+    }
+
+);
+
+
+/* =========================================================
+   TOUCH CANCEL
+========================================================= */
+
+stage.addEventListener(
+
+    "touchcancel",
+
+    event => {
+
+        event.preventDefault();
+
+
+        for (
+            const touch
+            of event.changedTouches
+        ) {
+
+            removeFinger(
+                touch.identifier
+            );
+
+        }
+
+    },
+
+    {
+        passive: false
+    }
+
+);
+
+
+/* =========================================================
+   IOS GESTURES
+========================================================= */
+
+document.addEventListener(
+    "gesturestart",
+    e => e.preventDefault()
+);
+
+document.addEventListener(
+    "gesturechange",
+    e => e.preventDefault()
+);
+
+document.addEventListener(
+    "gestureend",
+    e => e.preventDefault()
+);
+
+</script>
+
+</body>
+</html>
